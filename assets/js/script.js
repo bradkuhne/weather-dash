@@ -1,24 +1,25 @@
-var userFormEl = document.querySelector("#user-form");
-var languageButtonsEl = document.querySelector("#language-buttons");
-var nameInputEl = document.querySelector("#username");
-var repoContainerEl = document.querySelector("#repos-container");
-var repoSearchTerm = document.querySelector("#repo-search-term");
+var cityFormEl = document.querySelector("#city-form");
+var citiesButtonsEl = document.querySelector("#language-buttons");
+var cityInputEl = document.querySelector("#cityName");
+var weatherContainerEl = document.querySelector("#weather-container");
+var citySearchTerm = document.querySelector("#city-search-term");
+
 
 var formSubmitHandler = function(event) {
   // prevent page from refreshing
   event.preventDefault();
 
   // get value from input element
-  var username = nameInputEl.value.trim();
+  var cityName = cityInputEl.value.trim();
 
-  if (username) {
-    getUserRepos(username);
+  if (cityName) {
+    getWeather(cityName);
 
     // clear old content
     repoContainerEl.textContent = "";
-    nameInputEl.value = "";
+    cityInputEl.value = "";
   } else {
-    alert("Please enter a GitHub username");
+    alert("Please enter a City");
   }
 };
 
@@ -34,9 +35,10 @@ var buttonClickHandler = function(event) {
   }
 };
 
-var getUserRepos = function(user) {
+var getWeather = function(city) {
   // format the github api url
-  var apiUrl = "https://api.github.com/users/" + user + "/repos";
+  console.log ("This is the city.  About to call API: " + city);
+  var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=fb216df19d52385cbbcdf3f5081628c2";
 
   // make a get request to url
   fetch(apiUrl)
@@ -46,14 +48,14 @@ var getUserRepos = function(user) {
         console.log(response);
         response.json().then(function(data) {
           console.log(data);
-          displayRepos(data, user);
+          displayRepos(data, city);
         });
       } else {
         alert("Error: " + response.statusText);
       }
     })
     .catch(function(error) {
-      alert("Unable to connect to GitHub");
+      alert("Enter a valid city name");
     });
 };
 
@@ -81,45 +83,45 @@ var displayRepos = function(repos, searchTerm) {
     return;
   }
 
-  repoSearchTerm.textContent = searchTerm;
+  citySearchTerm.textContent = searchTerm;
 
-  // loop over repos
+  // loop over cities
   for (var i = 0; i < repos.length; i++) {
     // format repo name
-    var repoName = repos[i].owner.login + "/" + repos[i].name;
+    var cityName = repos[i].owner.login + "/" + repos[i].name;
 
     // create a link for each repo
-    var repoEl = document.createElement("a");
-    repoEl.classList = "list-item flex-row justify-space-between align-center";
-    repoEl.setAttribute("href", "./single-repo.html?repo=" + repoName);
+    var cityEl = document.createElement("a");
+    cityEl.classList = "list-item flex-row justify-space-between align-center";
+    cityEl.setAttribute("href", "./single-repo.html?repo=" + repoName);
 
     // create a span element to hold repository name
     var titleEl = document.createElement("span");
-    titleEl.textContent = repoName;
+    titleEl.textContent = cityName;
 
     // append to container
-    repoEl.appendChild(titleEl);
+    cityEl.appendChild(titleEl);
 
     // create a status element
     var statusEl = document.createElement("span");
     statusEl.classList = "flex-row align-center";
 
     // check if current repo has issues or not
-    if (repos[i].open_issues_count > 0) {
+    if (cities[i].open_issues_count > 0) {
       statusEl.innerHTML =
-        "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + " issue(s)";
+        "<i class='fas fa-times status-icon icon-danger'></i>" + cities[i].open_issues_count + " issue(s)";
     } else {
       statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
     }
 
     // append to container
-    repoEl.appendChild(statusEl);
+    cityEl.appendChild(statusEl);
 
     // append container to the dom
-    repoContainerEl.appendChild(repoEl);
+    cityContainerEl.appendChild(cityEl);
   }
 };
 
 // add event listeners to form and button container
-userFormEl.addEventListener("submit", formSubmitHandler);
-languageButtonsEl.addEventListener("click", buttonClickHandler);
+cityFormEl.addEventListener("submit", formSubmitHandler);
+citiesButtonsEl.addEventListener("click", buttonClickHandler);
