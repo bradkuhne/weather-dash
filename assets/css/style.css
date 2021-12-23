@@ -190,8 +190,26 @@
     border: 3px solid var(--dark);
     border-radius: var(--border-radius);
     font-size: 1.3rem;
+    box-sizing: border-box;
   }
-
+  .red-background {
+    background-color: red;
+  }
+  .green-background {
+    background-color: green;
+  }
+  .yellow-background {
+    background-color: yellow;
+  }
+  .forecast-container {
+    margin: 0 0px 20px 0;
+    font-size: 1.8rem;
+    /* box-sizing: content-box;*/
+  }
+  .forecast-box {
+    background-color: #07074b;
+    color: white;
+  }
 
 
   /* HEIGHT / WIDTH UTILS */

@@ -7,6 +7,7 @@ var locationIconEl = document.querySelector(".weather-icon");
 var weatherBoxEl = document.querySelector("#weather-container");
 var currentUvi = ""
 var cityName = ""
+var forecastContainerEl = document.querySelector("#forecast-container");
 
 
 var formSubmitHandler = function(event) {
@@ -129,30 +130,44 @@ var displayWeather = function(data, cityName) {
 
   
   //Add data lines to weather-box
- var tempEl = document.createElement("p");
- tempEl.textContent = "Temp: " + data.current.temp + " F";
- var windEl = document.createElement("p");
- windEl.textContent = "Wind: " + data.current.wind_speed + " MPH";
- var humidityEl = document.createElement("p");
- humidityEl.textContent = "Humidity: " + data.current.humidity + " %";
- var uvEl = document.createElement("p");
- uvEl.textContent = "UV Index: " + data.current.uvi;  // Need to color code
- 
- // Color code uvi
-if (data.current.uvi <= ".1"){
-  console.log ("turn to green");
-} else if (data.current.uvi <= ".5") {
-    console.log ("turn to yellow");
-  } else {
-      console.log ("turn to red");
-    };
- console.log ("Current uvi: " + uvEl.textContent);
+  var tempEl = document.createElement("p");
+  tempEl.textContent = "Temp: " + data.current.temp + " F";
+  var windEl = document.createElement("p");
+  windEl.textContent = "Wind: " + data.current.wind_speed + " MPH";
+  var humidityEl = document.createElement("p");
+  humidityEl.textContent = "Humidity: " + data.current.humidity + " %";
+  var uvEl = document.createElement("p");
+  uvEl.textContent = "UV Index: " + data.current.uvi;  // Need to color code
   
- // append to container
- weatherBoxEl.appendChild(tempEl);
- weatherBoxEl.appendChild(windEl);
- weatherBoxEl.appendChild(humidityEl);
- weatherBoxEl.appendChild(uvEl);
+  
+  // Color code uvi
+  if (data.current.uvi <= ".1"){
+    console.log ("turn to green");
+    var uvEl = document.createElement("a");
+    uvEl.className = "green-background";
+    uvEl.textContent = "UV Index: " + data.current.uvi;
+    
+  } else if (data.current.uvi <= ".5") {
+      console.log ("turn to yellow");
+      var uvEl = document.createElement("a");
+      uvEl.className = "yellow-background";
+      uvEl.textContent = "UV Index: " + data.current.uvi
+    } else {
+        console.log ("turn to red");
+        var uvEl = document.createElement("a");
+        uvEl.className = "red-background";
+        uvEl.textContent = "UV Index: " + data.current.uvi
+      };
+  console.log ("Current uvi: " + uvEl.textContent);
+    
+  // append to container
+  weatherBoxEl.appendChild(tempEl);
+  weatherBoxEl.appendChild(windEl);
+  weatherBoxEl.appendChild(humidityEl);
+  weatherBoxEl.appendChild(uvEl);
+  
+  forecastContainerEl.textContent = "5 Day Forecast:"
+
 };
 
 // add event listeners to form and button container
