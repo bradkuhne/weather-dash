@@ -39,4 +39,4 @@ The following image shows the web application's appearance and functionality:
 
 The following is a screen shot of the deployed application:
 
-![Actual Screen](./assets/images/Goal-screenshot.png)
+![Actual Screen](./assets/images/actual-screenshot.png)

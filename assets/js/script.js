@@ -141,13 +141,13 @@ var displayWeather = function(data, cityName) {
   
   
   // Color code uvi
-  if (data.current.uvi <= ".1"){
+  if (data.current.uvi <= "2"){
     console.log ("turn to green");
     var uvEl = document.createElement("a");
     uvEl.className = "green-background";
     uvEl.textContent = "UV Index: " + data.current.uvi;
     
-  } else if (data.current.uvi <= ".5") {
+  } else if (data.current.uvi <= "5") {
       console.log ("turn to yellow");
       var uvEl = document.createElement("a");
       uvEl.className = "yellow-background";
