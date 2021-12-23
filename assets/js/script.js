@@ -4,7 +4,8 @@ var cityInputEl = document.querySelector("#cityName");
 var weatherContainerEl = document.querySelector("#weather-container");
 var citySearchTerm = document.querySelector("#city-search-term");
 var locationIconEl = document.querySelector(".weather-icon");
-var weatherBoxEl = document.querySelector("#weather-box")
+var weatherBoxEl = document.querySelector("#weather-container");
+var currentUvi = ""
 
 
 var formSubmitHandler = function(event) {
@@ -56,7 +57,15 @@ var getWeather = function(city) {
           console.log("This is the weather id: " + data.id);
           console.log("This is the weather main temp: " + data.main.temp);
           console.log ("This is the FIRST icon value : " + data.weather[0].icon);
-          displayForecast(data, city);
+
+          var cityLat = data.coord.lat
+          var cityLon = data.coord.lon
+          var uvUrl = "https://api.openweathermap.org/data/2.5/onecall?lat="+ cityLat + "&lon=" + cityLon + 
+          "&exclude=minutely,hourly,alerts&appid=fb216df19d52385cbbcdf3f5081628c2" + "&units=imperial";
+          console.log ("about to fetch using this URL: " + uvUrl);
+          getUvAndForecast(uvUrl);
+
+          displayWeather(data, city);
         });
       } else {
         alert("Error: " + response.statusText);
@@ -66,34 +75,45 @@ var getWeather = function(city) {
       alert("Enter a valid city name");
     });
 };
+//  START OF CODE FOR 2ND FETCH
+var getUvAndForecast = function(uvUrl) {
+  // format the weather api url
+  console.log ("Inside 2nd function.  About to call API: " + uvUrl);
+    // make a get request to url
+  fetch(uvUrl)
+    .then(function(response) {
+      // request was successful
+      if (response.ok) {
+        console.log(response);
+        response.json().then(function(data) {
+          
+          console.log(data);
+          console.log("This is the lat: " + data.lat);
+          console.log("This is the uv index: " + data.current.uvi);
+          currentUvi = data.current.uvi;
+          
+          // displayForecast(data, city);
+        });
+      } else {
+        alert("Error: " + response.statusText);
+      }
+    })
+    .catch(function(error) {
+      alert("Something went wrong");
+    });
+};
 
-// var getFeaturedRepos = function(language) {
-//   // format the github api url
-//   var apiUrl = "https://api.github.com/search/repositories?q=" + language + "+is:featured&sort=help-wanted-issues";
+// END OF 2nd FETCH
 
-//   // make a get request to url
-//   fetch(apiUrl).then(function(response) {
-//     // request was successful
-//     if (response.ok) {
-//       response.json().then(function(data) {
-//         displayRepos(data.items, language);
-//       });
-//     } else {
-//       alert("Error: " + response.statusText);
-//     }
-//   });
-// };
-
-var displayForecast = function(data, searchTerm) {
+var displayWeather = function(data, searchTerm) {
   console.log ("First Repos are not blank.  Repos length: " + data.length)
-  // check if api returned any repos
+  // check if api returned any data
   if (data.length === 0) {
-    console.log ("repos are blank")
-    weatherContainerEl.textContent = "No repositories found.";
+    console.log ("data are blank")
+    weatherContainerEl.textContent = "No weather data found.";
     return;
   }
-  console.log ("Repos are not blank.  Repos length: " + data.length)
-  var todaysDate = moment().format('MM/DD/YYYY, h:mm a');
+  var todaysDate = moment().format('MM/DD/YYYY');
   var myWeatherIcon = data.weather[0].icon
   var weatherIconUrl = "http://openweathermap.org/img/w/" + myWeatherIcon +".png";
   console.log ("This should be the weather icon url: " + weatherIconUrl );
@@ -105,6 +125,25 @@ var displayForecast = function(data, searchTerm) {
   console.log ("This is the icon value : " + data.weather[0].icon);
   
   citySearchTerm.textContent = searchTerm + "  (" + todaysDate + ")";
+
+  
+  //Add data lines to weather-box
+ var tempEl = document.createElement("p");
+ tempEl.textContent = "Temp: " + data.main.temp + " F";
+ var windEl = document.createElement("p");
+ windEl.textContent = "Wind: " + data.wind.speed + " MPH";
+ var humidityEl = document.createElement("p");
+ humidityEl.textContent = "Humidity: " + data.main.humidity + " %";
+ var uvEl = document.createElement("p");
+ console.log ("Current uvi: " + currentUvi);
+ uvEl.textContent = "UV Index: " + currentUvi;  // Need to color code
+ 
+ console.log ("This is tempEl.textContent: " + tempEl.textContent);
+  // append to container
+ weatherBoxEl.appendChild(tempEl);
+ weatherBoxEl.appendChild(windEl);
+ weatherBoxEl.appendChild(humidityEl);
+ weatherBoxEl.appendChild(uvEl);
 
   // loop over cities
   for (var i = 0; i < data.length; i++) {
