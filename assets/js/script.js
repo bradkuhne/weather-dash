@@ -4,6 +4,7 @@ var cityInputEl = document.querySelector("#cityName");
 var weatherContainerEl = document.querySelector("#weather-container");
 var citySearchTerm = document.querySelector("#city-search-term");
 var locationIconEl = document.querySelector(".weather-icon");
+var weatherBoxEl = document.querySelector("#weather-box")
 
 
 var formSubmitHandler = function(event) {
@@ -93,14 +94,17 @@ var displayForecast = function(data, searchTerm) {
   }
   console.log ("Repos are not blank.  Repos length: " + data.length)
   var todaysDate = moment().format('MM/DD/YYYY, h:mm a');
-  const myWeatherIcon = data.weather[0].icon
-  var weatherIconUrl = "http://openweathermap.org/img/w/"+myWeatherIcon+".png";
+  var myWeatherIcon = data.weather[0].icon
+  var weatherIconUrl = "http://openweathermap.org/img/w/" + myWeatherIcon +".png";
   console.log ("This should be the weather icon url: " + weatherIconUrl );
   locationIconEl.innerHTML = "<img src =" + weatherIconUrl +"></img>";
-  // locationIconEl.innerHTML = "<img src=.assets/images/" + myWeatherIcon + ".png" ></img>; 
+  
+  // Display box around weather info
+  document.getElementById("weather-box").className = ("col-12 col-md-8 weather-box");
+   
   console.log ("This is the icon value : " + data.weather[0].icon);
-  var iconCode = data.weather[0].icon
-  citySearchTerm.textContent = searchTerm + "(" + todaysDate + ")" + " ";
+  
+  citySearchTerm.textContent = searchTerm + "  (" + todaysDate + ")";
 
   // loop over cities
   for (var i = 0; i < data.length; i++) {
