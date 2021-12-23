@@ -137,50 +137,22 @@ var displayWeather = function(data, cityName) {
  humidityEl.textContent = "Humidity: " + data.current.humidity + " %";
  var uvEl = document.createElement("p");
  uvEl.textContent = "UV Index: " + data.current.uvi;  // Need to color code
- console.log ("Current uvi: " + uvEl.textContent);
- console.log ("This is tempEl.textContent: " + tempEl.textContent);
  
+ // Color code uvi
+if (data.current.uvi <= ".1"){
+  console.log ("turn to green");
+} else if (data.current.uvi <= ".5") {
+    console.log ("turn to yellow");
+  } else {
+      console.log ("turn to red");
+    };
+ console.log ("Current uvi: " + uvEl.textContent);
+  
  // append to container
  weatherBoxEl.appendChild(tempEl);
  weatherBoxEl.appendChild(windEl);
  weatherBoxEl.appendChild(humidityEl);
  weatherBoxEl.appendChild(uvEl);
-
-  // loop over cities
-  for (var i = 0; i < data.length; i++) {
-    // format repo name
-    var cityName = data[i].owner.login + "/" + data[i].name;
-
-    // create a link for each repo
-    var cityEl = document.createElement("a");
-    cityEl.classList = "list-item flex-row justify-space-between align-center";
-    cityEl.setAttribute("href", "./single-repo.html?repo=" + dataName);
-
-    // create a span element to hold repository name
-    var titleEl = document.createElement("span");
-    titleEl.textContent = cityName;
-
-    // append to container
-    cityEl.appendChild(titleEl);
-
-    // create a status element
-    var statusEl = document.createElement("span");
-    statusEl.classList = "flex-row align-center";
-
-    // check if current repo has issues or not
-    if (cities[i].open_issues_count > 0) {
-      statusEl.innerHTML =
-        "<i class='fas fa-times status-icon icon-danger'></i>" + cities[i].open_issues_count + " issue(s)";
-    } else {
-      statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
-    }
-
-    // append to container
-    cityEl.appendChild(statusEl);
-
-    // append container to the dom
-    cityContainerEl.appendChild(cityEl);
-  }
 };
 
 // add event listeners to form and button container
