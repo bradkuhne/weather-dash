@@ -36,4 +36,7 @@ The following image shows the web application's appearance and functionality:
 
 ![Goal Mockup](./assets/images/Goal-screenshot.png)
 
+
+The following is a screen shot of the deployed application:
+
 ![Actual Screen](./assets/images/Goal-screenshot.png)
