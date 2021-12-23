@@ -6,6 +6,7 @@ var citySearchTerm = document.querySelector("#city-search-term");
 var locationIconEl = document.querySelector(".weather-icon");
 var weatherBoxEl = document.querySelector("#weather-container");
 var currentUvi = ""
+var cityName = ""
 
 
 var formSubmitHandler = function(event) {
@@ -13,7 +14,7 @@ var formSubmitHandler = function(event) {
   event.preventDefault();
 
   // get value from input element
-  var cityName = cityInputEl.value.trim();
+  cityName = cityInputEl.value.trim();
 
   if (cityName) {
     getWeather(cityName);
@@ -53,19 +54,19 @@ var getWeather = function(city) {
         console.log(response);
         response.json().then(function(data) {
           
-          console.log(data);
-          console.log("This is the weather id: " + data.id);
-          console.log("This is the weather main temp: " + data.main.temp);
-          console.log ("This is the FIRST icon value : " + data.weather[0].icon);
+          // console.log(data);
+          // console.log("This is the weather id: " + data.id);
+          // console.log("This is the weather main temp: " + data.main.temp);
+          // console.log ("This is the FIRST icon value : " + data.weather[0].icon);
 
           var cityLat = data.coord.lat
           var cityLon = data.coord.lon
           var uvUrl = "https://api.openweathermap.org/data/2.5/onecall?lat="+ cityLat + "&lon=" + cityLon + 
           "&exclude=minutely,hourly,alerts&appid=fb216df19d52385cbbcdf3f5081628c2" + "&units=imperial";
           console.log ("about to fetch using this URL: " + uvUrl);
-          getUvAndForecast(uvUrl);
+          getUvAndForecast(uvUrl, cityName);
 
-          displayWeather(data, city);
+          // displayWeather(data, city);
         });
       } else {
         alert("Error: " + response.statusText);
@@ -76,7 +77,7 @@ var getWeather = function(city) {
     });
 };
 //  START OF CODE FOR 2ND FETCH
-var getUvAndForecast = function(uvUrl) {
+var getUvAndForecast = function(uvUrl, cityName) {
   // format the weather api url
   console.log ("Inside 2nd function.  About to call API: " + uvUrl);
     // make a get request to url
@@ -90,9 +91,8 @@ var getUvAndForecast = function(uvUrl) {
           console.log(data);
           console.log("This is the lat: " + data.lat);
           console.log("This is the uv index: " + data.current.uvi);
-          currentUvi = data.current.uvi;
-          
-          // displayForecast(data, city);
+                   
+          displayWeather(data, cityName);
         });
       } else {
         alert("Error: " + response.statusText);
@@ -105,16 +105,16 @@ var getUvAndForecast = function(uvUrl) {
 
 // END OF 2nd FETCH
 
-var displayWeather = function(data, searchTerm) {
-  console.log ("First Repos are not blank.  Repos length: " + data.length)
+var displayWeather = function(data, cityName) {
+  console.log ("Inside displayWeather function");
   // check if api returned any data
-  if (data.length === 0) {
-    console.log ("data are blank")
+  if (data.lat === 0) {
+    console.log ("Data is blank")
     weatherContainerEl.textContent = "No weather data found.";
     return;
   }
   var todaysDate = moment().format('MM/DD/YYYY');
-  var myWeatherIcon = data.weather[0].icon
+  var myWeatherIcon = data.current.weather[0].icon
   var weatherIconUrl = "http://openweathermap.org/img/w/" + myWeatherIcon +".png";
   console.log ("This should be the weather icon url: " + weatherIconUrl );
   locationIconEl.innerHTML = "<img src =" + weatherIconUrl +"></img>";
@@ -122,24 +122,25 @@ var displayWeather = function(data, searchTerm) {
   // Display box around weather info
   document.getElementById("weather-box").className = ("col-12 col-md-8 weather-box");
    
-  console.log ("This is the icon value : " + data.weather[0].icon);
+  console.log ("This is the icon value : " + data.current.weather[0].icon);
+  console.log ("This is the city name about to be displayed: " + cityName);
   
-  citySearchTerm.textContent = searchTerm + "  (" + todaysDate + ")";
+  citySearchTerm.textContent = cityName + "  (" + todaysDate + ")";
 
   
   //Add data lines to weather-box
  var tempEl = document.createElement("p");
- tempEl.textContent = "Temp: " + data.main.temp + " F";
+ tempEl.textContent = "Temp: " + data.current.temp + " F";
  var windEl = document.createElement("p");
- windEl.textContent = "Wind: " + data.wind.speed + " MPH";
+ windEl.textContent = "Wind: " + data.current.wind_speed + " MPH";
  var humidityEl = document.createElement("p");
- humidityEl.textContent = "Humidity: " + data.main.humidity + " %";
+ humidityEl.textContent = "Humidity: " + data.current.humidity + " %";
  var uvEl = document.createElement("p");
- console.log ("Current uvi: " + currentUvi);
- uvEl.textContent = "UV Index: " + currentUvi;  // Need to color code
- 
+ uvEl.textContent = "UV Index: " + data.current.uvi;  // Need to color code
+ console.log ("Current uvi: " + uvEl.textContent);
  console.log ("This is tempEl.textContent: " + tempEl.textContent);
-  // append to container
+ 
+ // append to container
  weatherBoxEl.appendChild(tempEl);
  weatherBoxEl.appendChild(windEl);
  weatherBoxEl.appendChild(humidityEl);
